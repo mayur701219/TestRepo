@@ -26,8 +26,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.Use(async (context, next) =>
+{
 
+   
+    context.Response.Headers.Add("Content-Security-Policy",
+            "script-src 'self' http://localhost:7230/api/JsFile/getJson");
+
+    await next();
+});
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.UseCors("AllowAllOrigins");
